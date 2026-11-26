@@ -1,1 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Friendzy — Campus Social</title>
+  <style>
+    :root {
+      --bg: #0b0d13;
+      --surface: #141824;
+      --surface-2: #1c2233;
+      --border: #283047;
+      --text: #f3f5fa;
+      --muted: #98a2b8;
+      --accent: #7c5cff;
+      --accent-2: #22d3ee;
+      --danger: #f43f5e;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100dvh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(11, 13, 19, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 18px;
+      padding-bottom: 86px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--surface-2);
+      padding: 5px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .field {
+      margin-bottom: 13px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 13px 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #5b3df5);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      margin-top: 10px;
+    }
+
+    .msg {
+      margin-top: 12px;
+      font-size: 0.86rem;
+      line-height: 1.4;
+      min-height: 20px;
+    }
+
+    .msg.error { color: var(--danger); }
+    .msg.success { color: var(--success); }
+
+    .hidden { display: none !important; }
+
+    .stat-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent-2);
+    }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: rgba(20, 24, 36, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 6px 12px;
+      z-index: 20;
+    }
+
+    .nav-item {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.74rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 4px;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: var(--text);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" id="app-title">Friendzy</div>
+      <span class="pill" id="status-pill">Invite Gate Active</span>
+    </header>
+
+    <main class="main-content">
+      <!-- AUTH & INVITE GATE VIEW -->
+      <section id="auth-view" class="card">
+        <div class="tabs">
+          <button type="button" class="tab-btn active" id="tab-signup" onclick="switchAuthTab('signup')">Join Campus</button>
+          <button type="button" class="tab-btn" id="tab-login" onclick="switchAuthTab('login')">Log In</button>
+        </div>
+
+        <!-- SIGN UP FORM -->
+        <form id="signup-form" onsubmit="handleSignup(event)">
+          <div class="field">
+            <label for="signup-invite">School Invite Code</label>
+            <input id="signup-invite" type="text" placeholder="Enter class invite code" required />
+          </div>
+          <div class="field">
+            <label for="signup-name">Your Name</label>
+            <input id="signup-name" type="text" placeholder="e.g., Aarav Sharma" required />
+          </div>
+          <div class="field">
+            <label for="signup-email">Email</label>
+            <input id="signup-email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="field">
+            <label for="signup-password">Password (min 6 chars)</label>
+            <input id="signup-password" type="password" minlength="6" placeholder="Create a password" required />
+          </div>
+          <button type="submit" class="btn btn-primary" id="signup-btn">Create Campus Account</button>
+        </form>
+
+        <!-- LOGIN FORM -->
+        <form id="login-form" class="hidden" onsubmit="handleLogin(event)">
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input id="login-email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" placeholder="Your password" required />
+          </div>
+          <button type="submit" class="btn btn-primary" id="login-btn">Log In</button>
+        </form>
+
+        <div id="auth-msg" class="msg"></div>
+      </section>
+
+      <!-- LOGGED-IN CAMPUS SHELL VIEW -->
+      <section id="home-view" class="hidden">
+        <div class="card">
+          <h2 id="welcome-heading" style="font-size: 1.25rem; margin-bottom: 6px;">Welcome to Campus!</h2>
+          <p id="user-meta" style="color: var(--muted); font-size: 0.9rem;"></p>
+
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="stat-val" id="karma-val">0</div>
+              <div class="stat-lbl">Campus Karma</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val" id="aura-val">✨ Ready</div>
+              <div class="stat-lbl">Mood / Aura</div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-secondary" onclick="handleLogout()">Log Out</button>
+        </div>
+
+        <div class="card" id="feature-preview-card">
+          <h3 id="feature-title" style="font-size: 1.05rem; margin-bottom: 6px;">Day 4 Gate Verified</h3>
+          <p id="feature-desc" style="color: var(--muted); font-size: 0.9rem; line-height: 1.5;">
+            Your invite code check, login, and user profile database are connected. Tomorrow on Day 5 we add the Main Feed, Photo Posts, and Study SOS.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav hidden" id="bottom-nav">
+      <button type="button" class="nav-item active" onclick="previewTab('feed', this)">
+        <span>📰</span><span>Feed</span>
+      </button>
+      <button type="button" class="nav-item" onclick="previewTab('reels', this)">
+        <span>🎬</span><span>Reels</span>
+      </button>
+      <button type="button" class="nav-item" onclick="previewTab('lounge', this)">
+        <span>💬</span><span>Lounge</span>
+      </button>
+      <button type="button" class="nav-item" onclick="previewTab('profile', this)">
+        <span>⚡</span><span>Profile</span>
+      </button>
+    </nav>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    // === REPLACE WITH YOUR OWN KEYS FROM FIREBASE & CLOUDINARY ===
+    const APP_CONFIG = {
+      appName: "Friendzy",
+      inviteCode: "CAMPUS2026", // Change this secret code before sharing with classmates
+      cloudinaryCloudName: "PASTE_CLOUD_NAME_HERE",
+      cloudinaryUploadPreset: "PASTE_UPLOAD_PRESET_HERE",
+      firebaseConfig: {
+        apiKey: "PASTE_API_KEY",
+        authDomain: "PASTE_AUTH_DOMAIN",
+        projectId: "PASTE_PROJECT_ID",
+        storageBucket: "PASTE_STORAGE_BUCKET",
+        messagingSenderId: "PASTE_SENDER_ID",
+        appId: "PASTE_APP_ID"
+      }
+    };
+
+    document.getElementById("app-title").textContent = APP_CONFIG.appName;
+    document.title = `${APP_CONFIG.appName} — Campus Social`;
+
+    const app = initializeApp(APP_CONFIG.firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const authView = document.getElementById("auth-view");
+    const homeView = document.getElementById("home-view");
+    const bottomNav = document.getElementById("bottom-nav");
+    const statusPill = document.getElementById("status-pill");
+    const authMsg = document.getElementById("auth-msg");
+
+    function setMsg(text, type = "") {
+      authMsg.textContent = text;
+      authMsg.className = `msg ${type}`.trim();
+    }
+
+    window.switchAuthTab = function(mode) {
+      const isSignup = mode === "signup";
+      document.getElementById("tab-signup").classList.toggle("active", isSignup);
+      document.getElementById("tab-login").classList.toggle("active", !isSignup);
+      document.getElementById("signup-form").classList.toggle("hidden", !isSignup);
+      document.getElementById("login-form").classList.toggle("hidden", isSignup);
+      setMsg("");
+    };
+
+    window.handleSignup = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("signup-btn");
+      const code = document.getElementById("signup-invite").value.trim().toUpperCase();
+      const name = document.getElementById("signup-name").value.trim();
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value;
+
+      if (code !== APP_CONFIG.inviteCode.toUpperCase()) {
+        setMsg("Invalid school invite code. Ask your class admin for the valid code.", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      setMsg("Creating your campus account...");
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "users", cred.user.uid), {
+          name,
+          email,
+          aura: "✨ Day 1 Member",
+          karma: 10,
+          joinedAt: serverTimestamp()
+        });
+        setMsg("Account created! Welcome in.", "success");
+        document.getElementById("signup-form").reset();
+      } catch (err) {
+        setMsg(err.message || "Could not create account.", "error");
+      } finally {
+        btn.disabled = false;
+      }
+    };
+
+    window.handleLogin = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("login-btn");
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+
+      btn.disabled = true;
+      setMsg("Logging in...");
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        setMsg("");
+        document.getElementById("login-form").reset();
+      } catch (err) {
+        setMsg(err.message || "Login failed.", "error");
+      } finally {
+        btn.disabled = false;
+      }
+    };
+
+    window.handleLogout = async function() {
+      await signOut(auth);
+    };
+
+    window.previewTab = function(tabName, el) {
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+      el.classList.add("active");
+
+      const info = {
+        feed: ["Main Feed + Study SOS", "Scheduled for Day 5: post updates, photos, and Study SOS help requests that award Campus Karma."],
+        reels: ["Campus Reels", "Scheduled for Day 6: vertical short clips uploaded via Cloudinary."],
+        lounge: ["Live Campus Lounge", "Scheduled for Day 7: real-time campus chat room and classmate DMs."],
+        profile: ["Profile & Mood/Aura", "Scheduled for Day 8: customize your Mood/Aura badge and add the app icon to your home screen."]
+      }[tabName];
+
+      document.getElementById("feature-title").textContent = info[0];
+      document.getElementById("feature-desc").textContent = info[1];
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        authView.classList.add("hidden");
+        homeView.classList.remove("hidden");
+        bottomNav.classList.remove("hidden");
+        statusPill.textContent = "Verified";
+
+        let profile = { name: user.email, aura: "✨ Ready", karma: 0 };
+        try {
+          const snap = await getDoc(doc(db, "users", user.uid));
+          if (snap.exists()) {
+            profile = { ...profile, ...snap.data() };
+          }
+        } catch (_) {}
+
+        document.getElementById("welcome-heading").textContent = `Hey, ${profile.name}!`;
+        document.getElementById("user-meta").textContent = `Signed in as ${user.email}`;
+        document.getElementById("karma-val").textContent = profile.karma ?? 0;
+        document.getElementById("aura-val").textContent = profile.aura || "✨ Ready";
+      } else {
+        homeView.classList.add("hidden");
+        bottomNav.classList.add("hidden");
+        authView.classList.remove("hidden");
+        statusPill.textContent = "Invite Gate Active";
+      }
+    });
+  </script>
+</body>
+            </html>
 
